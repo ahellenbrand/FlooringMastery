@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/mvc
+          http://www.springframework.org/schema/mvc/spring-mvc.xsd
+          http://www.springframework.org/schema/tx
+          http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+          http://www.springframework.org/schema/context
+          http://www.springframework.org/schema/context/spring-context.xsd
+          http://www.springframework.org/schema/aop  
+          http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
+
+    <!-- Bean definitions go here -->
+    <bean id="userIO" class="com.sg.flooringmastery.ui.UserIOConsoleImpl"/>
+    
+    <bean id="view" class="com.sg.flooringmastery.ui.View">
+        <constructor-arg ref="userIO"/>
+    </bean>
+    
+    <!-- Change Prod to Training to prevent write access -->
+    <bean id="ordersDao"
+          class="com.sg.flooringmastery.dao.OrdersProdDaoFileImpl"/>
+   
+    <bean id="productsDao"
+          class="com.sg.flooringmastery.dao.ProductsDaoFileImpl"/>
+   
+    <bean id="statesDao"
+          class="com.sg.flooringmastery.dao.StatesDaoFileImpl"/>
+    
+    <!-- Change to stub implementation when training to prevent write access -->
+    <bean id="auditDao"
+          class="com.sg.flooringmastery.dao.AuditDaoFileImpl"/>    
+   
+    <bean id="service"
+          class="com.sg.flooringmastery.service.FloorServiceImpl">
+        <constructor-arg ref="ordersDao"/>
+        <constructor-arg ref="productsDao"/>
+        <constructor-arg ref="statesDao"/>
+        <constructor-arg ref="auditDao"/>
+    </bean>    
+
+    <bean id="controller"
+          class="com.sg.flooringmastery.controller.Controller">
+        <constructor-arg ref="service"/>
+        <constructor-arg ref="view"/>
+    </bean>
+          
+</beans>
